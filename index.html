@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>محاسبه‌گر قیمت</title>
+  <style>
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Tahoma,Arial,sans-serif;
+      background:#f5f6fa;
+      color:#202124
+    }
+    .container{
+      max-width:1100px;
+      margin:40px auto;
+      padding:20px
+    }
+    .card{
+      background:#fff;
+      border-radius:18px;
+      padding:25px;
+      box-shadow:0 8px 30px rgba(0,0,0,.08);
+      margin-bottom:20px
+    }
+    h1{margin-top:0}
+    .settings{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:15px
+    }
+    label{font-weight:bold}
+    input{
+      width:100%;
+      padding:13px;
+      margin-top:8px;
+      border:1px solid #ddd;
+      border-radius:10px;
+      font-size:15px
+    }
+    button{
+      border:0;
+      border-radius:10px;
+      padding:13px 20px;
+      cursor:pointer;
+      background:#111827;
+      color:white;
+      font-size:15px
+    }
+    .search{
+      display:flex;
+      gap:10px;
+      margin-top:20px
+    }
+    .search input{margin:0}
+    .result{
+      margin-top:20px
+    }
+    .product{
+      border:1px solid #eee;
+      border-radius:14px;
+      padding:18px;
+      margin-bottom:12px;
+      display:flex;
+      justify-content:space-between;
+      gap:20px;
+      align-items:center
+    }
+    .price{
+      font-size:20px;
+      font-weight:bold;
+      color:#087443
+    }
+    .muted{
+      color:#777;
+      font-size:13px;
+      margin-top:5px
+    }
+    .loading{
+      text-align:center;
+      padding:30px;
+      color:#777
+    }
+    @media(max-width:700px){
+      .settings{grid-template-columns:1fr}
+      .product{flex-direction:column;align-items:stretch}
+      .search{flex-direction:column}
+    }
+  </style>
+</head>
+
+<body>
+<div class="container">
+
+  <div class="card">
+    <h1>محاسبه‌گر قیمت محصولات</h1>
+
+    <div class="settings">
+      <div>
+        <label>درصد افزایش قیمت</label>
+        <input id="markup" type="number" value="50" min="0">
+      </div>
+
+      <div>
+        <label>درصد مالیات</label>
+        <input id="tax" type="number" value="10" min="0">
+      </div>
+
+      <div>
+        <label>هزینه ارسال</label>
+        <input id="shipping" type="number" value="150000" min="0">
+      </div>
+    </div>
+
+    <div class="search">
+      <input
+        id="searchInput"
+        type="text"
+        placeholder="نام یا کد محصول را جستجو کنید..."
+      >
+      <button onclick="searchProducts()">جستجو</button>
+    </div>
+  </div>
+
+  <div class="card result" id="result">
+    <div class="loading">
+      برای شروع، نام یا کد محصول را جستجو کنید.
+    </div>
+  </div>
+
+</div>
+
+<script>
+const API_URL = "/api/products";
+
+function calculatePrice(basePrice) {
+  const markup = Number(document.getElementById("markup").value) || 0;
+  const tax = Number(document.getElementById("tax").value) || 0;
+  const shipping = Number(document.getElementById("shipping").value) || 0;
+
+  const afterMarkup = basePrice * (1 + markup / 100);
+  const taxAmount = afterMarkup * (tax / 100);
+
+  return {
+    basePrice,
+    markupAmount: afterMarkup - basePrice,
+    taxAmount,
+    shipping,
+    finalPrice: afterMarkup + taxAmount + shipping
+  };
+}
+
+function money(value) {
+  return Math.round(value).toLocaleString("fa-IR") + " تومان";
+}
+
+async function searchProducts() {
+  const query = document.getElementById("searchInput").value.trim();
+  const result = document.getElementById("result");
+
+  if (!query) {
+    result.innerHTML = `
+      <div class="loading">
+        لطفاً نام یا کد محصول را وارد کنید.
+      </div>
+    `;
+    return;
+  }
+
+  result.innerHTML = `
+    <div class="loading">
+      در حال دریافت اطلاعات...
+    </div>
+  `;
+
+  try {
+    const response = await fetch(
+      API_URL + "?q=" + encodeURIComponent(query)
+    );
+
+    if (!response.ok) {
+      throw new Error("API Error");
+    }
+
+    const products = await response.json();
+
+    if (!products.length) {
+      result.innerHTML = `
+        <div class="loading">
+          محصولی پیدا نشد.
+        </div>
+      `;
+      return;
+    }
+
+    result.innerHTML = products.map(product => {
+      const price = calculatePrice(Number(product.price));
+
+      return `
+        <div class="product">
+
+          <div>
+            <h3>${escapeHtml(product.name)}</h3>
+
+            ${product.code ? `
+              <div class="muted">
+                کد محصول: ${escapeHtml(product.code)}
+              </div>
+            ` : ""}
+
+            <div class="muted">
+              قیمت سایت مبدا: ${money(price.basePrice)}
+            </div>
+
+            <div class="muted">
+              افزایش قیمت: ${money(price.markupAmount)}
+            </div>
+
+            <div class="muted">
+              مالیات: ${money(price.taxAmount)}
+            </div>
+
+            <div class="muted">
+              ارسال: ${money(price.shipping)}
+            </div>
+          </div>
+
+          <div class="price">
+            ${money(price.finalPrice)}
+          </div>
+
+        </div>
+      `;
+    }).join("");
+
+  } catch (error) {
+    result.innerHTML = `
+      <div class="loading">
+        اتصال به سرور برقرار نشد.
+        <br><br>
+        API سایت باید اطلاعات محصولات را در مسیر
+        <code>/api/products</code>
+        ارائه کند.
+      </div>
+    `;
+  }
+}
+
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+document.getElementById("searchInput")
+  .addEventListener("keydown", e => {
+    if (e.key === "Enter") searchProducts();
+  });
+</script>
+
+</body>
+</html>
