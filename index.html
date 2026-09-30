@@ -3,263 +3,646 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>محاسبه‌گر قیمت</title>
+
+  <title>COLD — Art Experience</title>
+
   <style>
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family:Tahoma,Arial,sans-serif;
-      background:#f5f6fa;
-      color:#202124
+    @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&display=swap');
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
-    .container{
-      max-width:1100px;
-      margin:40px auto;
-      padding:20px
+
+    html {
+      scroll-behavior: smooth;
     }
-    .card{
-      background:#fff;
-      border-radius:18px;
-      padding:25px;
-      box-shadow:0 8px 30px rgba(0,0,0,.08);
-      margin-bottom:20px
+
+    body {
+      background: #030205;
+      color: white;
+      font-family: "Vazirmatn", sans-serif;
+      overflow-x: hidden;
     }
-    h1{margin-top:0}
-    .settings{
-      display:grid;
-      grid-template-columns:repeat(3,1fr);
-      gap:15px
+
+    /* Background */
+
+    .background {
+      position: fixed;
+      inset: 0;
+      z-index: -5;
+      background:
+        radial-gradient(
+          circle at 80% 20%,
+          rgba(130, 25, 255, 0.35),
+          transparent 30%
+        ),
+        radial-gradient(
+          circle at 20% 80%,
+          rgba(70, 10, 130, 0.2),
+          transparent 35%
+        ),
+        #030205;
     }
-    label{font-weight:bold}
-    input{
-      width:100%;
-      padding:13px;
-      margin-top:8px;
-      border:1px solid #ddd;
-      border-radius:10px;
-      font-size:15px
+
+    .light {
+      position: fixed;
+      width: 400px;
+      height: 400px;
+      right: -150px;
+      top: -150px;
+      border-radius: 50%;
+      background: #8c32ff;
+      filter: blur(130px);
+      opacity: 0.18;
+      animation: floating 7s ease-in-out infinite;
     }
-    button{
-      border:0;
-      border-radius:10px;
-      padding:13px 20px;
-      cursor:pointer;
-      background:#111827;
-      color:white;
-      font-size:15px
+
+    @keyframes floating {
+      50% {
+        transform: translate(-80px, 100px) scale(1.2);
+        opacity: 0.3;
+      }
     }
-    .search{
-      display:flex;
-      gap:10px;
-      margin-top:20px
+
+    /* Main */
+
+    .container {
+      width: min(700px, 100%);
+      margin: auto;
+      padding: 20px;
     }
-    .search input{margin:0}
-    .result{
-      margin-top:20px
+
+    /* Header */
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      font-size: 10px;
+      letter-spacing: 3px;
+
+      color: #8d8794;
+
+      padding: 10px 0 25px;
     }
-    .product{
-      border:1px solid #eee;
-      border-radius:14px;
-      padding:18px;
-      margin-bottom:12px;
-      display:flex;
-      justify-content:space-between;
-      gap:20px;
-      align-items:center
+
+    /* Hero */
+
+    .hero {
+      min-height: 100vh;
+
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+
+      gap: 25px;
     }
-    .price{
-      font-size:20px;
-      font-weight:bold;
-      color:#087443
+
+    /* Artwork */
+
+    .art-wrapper {
+      position: relative;
+
+      border-radius: 25px;
+
+      overflow: hidden;
+
+      box-shadow:
+        0 0 80px rgba(123, 35, 255, 0.2),
+        0 30px 100px rgba(0, 0, 0, 0.7);
+
+      animation: appear 1.5s ease;
     }
-    .muted{
-      color:#777;
-      font-size:13px;
-      margin-top:5px
+
+    .art-wrapper img {
+      width: 100%;
+      display: block;
+
+      transition:
+        transform 2s ease,
+        filter 2s ease;
     }
-    .loading{
-      text-align:center;
-      padding:30px;
-      color:#777
+
+    .art-wrapper:hover img {
+      transform: scale(1.04);
     }
-    @media(max-width:700px){
-      .settings{grid-template-columns:1fr}
-      .product{flex-direction:column;align-items:stretch}
-      .search{flex-direction:column}
+
+    @keyframes appear {
+      from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.97);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
     }
+
+    /* Purple Glow */
+
+    .art-glow {
+      position: absolute;
+
+      width: 45%;
+      aspect-ratio: 1;
+
+      right: -10%;
+      top: -10%;
+
+      border-radius: 50%;
+
+      background: #8d2dff;
+
+      filter: blur(70px);
+
+      opacity: 0.2;
+
+      animation: glow 4s infinite ease-in-out;
+    }
+
+    @keyframes glow {
+      50% {
+        transform: scale(1.2);
+        opacity: 0.4;
+      }
+    }
+
+    /* Text */
+
+    .label {
+      color: #8d8495;
+
+      font-size: 11px;
+
+      letter-spacing: 5px;
+
+      text-transform: uppercase;
+    }
+
+    h1 {
+      font-size: clamp(60px, 17vw, 110px);
+
+      line-height: 0.9;
+
+      font-weight: 600;
+
+      letter-spacing: -5px;
+
+      margin-top: 5px;
+    }
+
+    .description {
+      color: #aaa2b1;
+
+      font-size: 14px;
+
+      line-height: 2;
+
+      max-width: 580px;
+
+      margin-top: 15px;
+    }
+
+    /* Buttons */
+
+    .buttons {
+      display: grid;
+
+      grid-template-columns: 1fr 1fr;
+
+      gap: 10px;
+
+      margin-top: 20px;
+    }
+
+    .button {
+      display: flex;
+
+      justify-content: center;
+      align-items: center;
+
+      min-height: 55px;
+
+      border-radius: 50px;
+
+      text-decoration: none;
+
+      font-family: inherit;
+
+      font-size: 13px;
+
+      font-weight: 600;
+
+      cursor: pointer;
+
+      transition: 0.3s;
+    }
+
+    .button:hover {
+      transform: translateY(-3px);
+    }
+
+    .primary {
+      border: none;
+
+      background: white;
+
+      color: black;
+    }
+
+    .secondary {
+      border: 1px solid rgba(255,255,255,0.15);
+
+      background: rgba(255,255,255,0.04);
+
+      color: white;
+    }
+
+    /* Info */
+
+    .info {
+      display: grid;
+
+      grid-template-columns: 1fr 1fr;
+
+      gap: 10px;
+
+      margin-top: 20px;
+    }
+
+    .info-box {
+      border: 1px solid rgba(255,255,255,0.08);
+
+      background: rgba(255,255,255,0.035);
+
+      border-radius: 18px;
+
+      padding: 18px;
+    }
+
+    .info-box span {
+      display: block;
+
+      color: #817987;
+
+      font-size: 10px;
+
+      margin-bottom: 7px;
+    }
+
+    .info-box strong {
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    /* Story */
+
+    .story {
+      padding: 100px 0 60px;
+    }
+
+    .story h2 {
+      font-size: 28px;
+
+      margin-bottom: 20px;
+    }
+
+    .story p {
+      color: #aaa2b1;
+
+      font-size: 14px;
+
+      line-height: 2.2;
+    }
+
+    /* Music Visualizer */
+
+    .visualizer {
+      position: fixed;
+
+      bottom: 20px;
+
+      left: 50%;
+
+      transform: translateX(-50%);
+
+      width: calc(100% - 30px);
+
+      max-width: 650px;
+
+      padding: 12px;
+
+      border-radius: 20px;
+
+      display: none;
+
+      align-items: center;
+
+      gap: 12px;
+
+      background: rgba(12,8,18,0.8);
+
+      border: 1px solid rgba(255,255,255,0.1);
+
+      backdrop-filter: blur(20px);
+
+      z-index: 100;
+    }
+
+    .visualizer.active {
+      display: flex;
+    }
+
+    .disc {
+      width: 42px;
+      height: 42px;
+
+      flex-shrink: 0;
+
+      border-radius: 50%;
+
+      background:
+        radial-gradient(
+          circle,
+          white 0 5%,
+          #963eff 6% 25%,
+          #120a18 26%
+        );
+
+      animation: spin 3s linear infinite;
+
+      animation-play-state: paused;
+    }
+
+    .visualizer.playing .disc {
+      animation-play-state: running;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .music-info {
+      flex: 1;
+
+      font-size: 12px;
+    }
+
+    .music-info small {
+      display: block;
+
+      color: #817987;
+
+      margin-top: 3px;
+    }
+
+    .open-music {
+      background: white;
+
+      color: black;
+
+      padding: 10px 14px;
+
+      border-radius: 30px;
+
+      text-decoration: none;
+
+      font-size: 11px;
+
+      font-weight: bold;
+    }
+
+    /* Mobile */
+
+    @media(max-width:600px) {
+
+      .container {
+        padding: 16px;
+      }
+
+      .buttons {
+        grid-template-columns: 1fr;
+      }
+
+      .hero {
+        min-height: auto;
+        padding-top: 30px;
+      }
+
+      h1 {
+        font-size: 75px;
+      }
+
+      .story {
+        padding-top: 80px;
+      }
+
+    }
+
   </style>
 </head>
 
 <body>
-<div class="container">
 
-  <div class="card">
-    <h1>محاسبه‌گر قیمت محصولات</h1>
+  <div class="background"></div>
+  <div class="light"></div>
 
-    <div class="settings">
-      <div>
-        <label>درصد افزایش قیمت</label>
-        <input id="markup" type="number" value="50" min="0">
+  <main class="container">
+
+    <header>
+      <span>ART / 001</span>
+      <span>COLD EXPERIENCE</span>
+    </header>
+
+
+    <section class="hero">
+
+      <!-- Artwork -->
+
+      <div class="art-wrapper">
+
+        <!-- عکس تابلو -->
+        <img
+          src="artwork.jpg"
+          alt="COLD Artwork"
+        />
+
+        <div class="art-glow"></div>
+
       </div>
 
-      <div>
-        <label>درصد مالیات</label>
-        <input id="tax" type="number" value="10" min="0">
-      </div>
+
+      <!-- Title -->
 
       <div>
-        <label>هزینه ارسال</label>
-        <input id="shipping" type="number" value="150000" min="0">
+
+        <div class="label">
+          Visual Interpretation
+        </div>
+
+        <h1>COLD</h1>
+
+        <p class="description">
+
+          این اثر برداشتی بصری از بخش‌هایی از
+          موزیک‌ویدئوی «سرد» است؛
+          جایی میان تصویر، موسیقی و خاطره.
+
+        </p>
+
+
+        <!-- Buttons -->
+
+        <div class="buttons">
+
+          <button
+            class="button primary"
+            onclick="openMusic()"
+          >
+            🎧 شنیدن «کد»
+          </button>
+
+
+          <!-- لینک موزیک ویدئو -->
+
+          <a
+            class="button secondary"
+            href="YOUR_MUSIC_VIDEO_LINK"
+            target="_blank"
+          >
+            🎬 موزیک‌ویدئوی «سرد»
+          </a>
+
+        </div>
+
+
+        <!-- Information -->
+
+        <div class="info">
+
+          <div class="info-box">
+
+            <span>TRACK</span>
+
+            <strong>
+              کد
+            </strong>
+
+          </div>
+
+
+          <div class="info-box">
+
+            <span>INSPIRED BY</span>
+
+            <strong>
+              سرد — متین فتاحی
+            </strong>
+
+          </div>
+
+        </div>
+
       </div>
+
+    </section>
+
+
+    <!-- Story -->
+
+    <section class="story">
+
+      <h2>
+        وارد تابلو شو.
+      </h2>
+
+      <p>
+
+        این صفحه فقط یک معرفی ساده نیست.
+        QR روی تابلو نقطه‌ی اتصال تصویر و صداست.
+        هدفونت را بگذار، آهنگ را باز کن
+        و دوباره به جزئیات اثر نگاه کن.
+
+      </p>
+
+    </section>
+
+
+  </main>
+
+
+  <!-- Music Bar -->
+
+  <div
+    class="visualizer"
+    id="musicPlayer"
+  >
+
+    <div class="disc"></div>
+
+    <div class="music-info">
+
+      <b>کد</b>
+
+      <small>
+        Matin Fattahi
+      </small>
+
     </div>
 
-    <div class="search">
-      <input
-        id="searchInput"
-        type="text"
-        placeholder="نام یا کد محصول را جستجو کنید..."
-      >
-      <button onclick="searchProducts()">جستجو</button>
-    </div>
+    <a
+      class="open-music"
+      href="YOUR_MUSIC_LINK"
+      target="_blank"
+    >
+      OPEN
+    </a>
+
   </div>
 
-  <div class="card result" id="result">
-    <div class="loading">
-      برای شروع، نام یا کد محصول را جستجو کنید.
-    </div>
-  </div>
-
-</div>
 
 <script>
-const API_URL = "/api/products";
 
-function calculatePrice(basePrice) {
-  const markup = Number(document.getElementById("markup").value) || 0;
-  const tax = Number(document.getElementById("tax").value) || 0;
-  const shipping = Number(document.getElementById("shipping").value) || 0;
+function openMusic() {
 
-  const afterMarkup = basePrice * (1 + markup / 100);
-  const taxAmount = afterMarkup * (tax / 100);
+  const player =
+    document.getElementById("musicPlayer");
 
-  return {
-    basePrice,
-    markupAmount: afterMarkup - basePrice,
-    taxAmount,
-    shipping,
-    finalPrice: afterMarkup + taxAmount + shipping
-  };
-}
+  player.classList.add(
+    "active",
+    "playing"
+  );
 
-function money(value) {
-  return Math.round(value).toLocaleString("fa-IR") + " تومان";
-}
+  /*
+    اینجا آهنگ پخش نمی‌شود.
 
-async function searchProducts() {
-  const query = document.getElementById("searchInput").value.trim();
-  const result = document.getElementById("result");
+    چون قرار است کاربر را به لینک
+    رسمی آهنگ «کد» هدایت کنیم.
 
-  if (!query) {
-    result.innerHTML = `
-      <div class="loading">
-        لطفاً نام یا کد محصول را وارد کنید.
-      </div>
-    `;
-    return;
-  }
+    لینک واقعی را در:
+    
+    YOUR_MUSIC_LINK
 
-  result.innerHTML = `
-    <div class="loading">
-      در حال دریافت اطلاعات...
-    </div>
-  `;
+    قرار بده.
+  */
 
-  try {
-    const response = await fetch(
-      API_URL + "?q=" + encodeURIComponent(query)
+  setTimeout(() => {
+
+    window.open(
+      "YOUR_MUSIC_LINK",
+      "_blank"
     );
 
-    if (!response.ok) {
-      throw new Error("API Error");
-    }
+  }, 500);
 
-    const products = await response.json();
-
-    if (!products.length) {
-      result.innerHTML = `
-        <div class="loading">
-          محصولی پیدا نشد.
-        </div>
-      `;
-      return;
-    }
-
-    result.innerHTML = products.map(product => {
-      const price = calculatePrice(Number(product.price));
-
-      return `
-        <div class="product">
-
-          <div>
-            <h3>${escapeHtml(product.name)}</h3>
-
-            ${product.code ? `
-              <div class="muted">
-                کد محصول: ${escapeHtml(product.code)}
-              </div>
-            ` : ""}
-
-            <div class="muted">
-              قیمت سایت مبدا: ${money(price.basePrice)}
-            </div>
-
-            <div class="muted">
-              افزایش قیمت: ${money(price.markupAmount)}
-            </div>
-
-            <div class="muted">
-              مالیات: ${money(price.taxAmount)}
-            </div>
-
-            <div class="muted">
-              ارسال: ${money(price.shipping)}
-            </div>
-          </div>
-
-          <div class="price">
-            ${money(price.finalPrice)}
-          </div>
-
-        </div>
-      `;
-    }).join("");
-
-  } catch (error) {
-    result.innerHTML = `
-      <div class="loading">
-        اتصال به سرور برقرار نشد.
-        <br><br>
-        API سایت باید اطلاعات محصولات را در مسیر
-        <code>/api/products</code>
-        ارائه کند.
-      </div>
-    `;
-  }
 }
 
-function escapeHtml(value) {
-  return String(value)
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
-}
-
-document.getElementById("searchInput")
-  .addEventListener("keydown", e => {
-    if (e.key === "Enter") searchProducts();
-  });
 </script>
 
 </body>
